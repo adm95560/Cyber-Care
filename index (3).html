@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberCare – SecuriMed | Protection Cybersécurité Hospitalière</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --bg2: #0f1520;
+      --surface: #141c2e;
+      --surface2: #1a2540;
+      --border: rgba(255,255,255,0.07);
+      --text: #e8edf5;
+      --text-muted: #7a8ba8;
+      --text-dim: #4a5a72;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+
+      --green: #10b981;
+      --green-bg: rgba(16,185,129,0.08);
+      --green-border: rgba(16,185,129,0.25);
+
+      --orange: #f59e0b;
+      --orange-bg: rgba(245,158,11,0.08);
+      --orange-border: rgba(245,158,11,0.25);
+
+      --red: #ef4444;
+      --red-bg: rgba(239,68,68,0.08);
+      --red-border: rgba(239,68,68,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── GRID BG ─── */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 70%);
+    }
+
+    /* ─── GLOW BLOB ─── */
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(10,14,23,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: white !important;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8rem !important;
+    }
+
+    .nav-cta:hover { background: var(--accent-light); color: white !important; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero .glow:nth-child(1) {
+      width: 500px; height: 500px;
+      background: rgba(59,130,246,0.12);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .hero .glow:nth-child(2) {
+      width: 300px; height: 300px;
+      background: rgba(124,58,237,0.1);
+      top: 20%; left: 10%;
+    }
+
+    .hero .glow:nth-child(3) {
+      width: 300px; height: 300px;
+      background: rgba(16,185,129,0.07);
+      top: 30%; right: 5%;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 100px;
+      padding: 0.35rem 1rem;
+      font-size: 0.8rem;
+      color: var(--accent-light);
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 900px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-light) 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      max-width: 600px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-top: 1.5rem;
+      line-height: 1.7;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface2);
+      transform: translateY(-1px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.6s 0.4s ease both;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat { text-align: center; }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SECTIONS ─── */
+    section {
+      position: relative;
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      color: var(--text-muted);
+      max-width: 540px;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ─── KITS ─── */
+    #kits { padding-top: 2rem; }
+
+    .kits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .kit-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kit-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+      border-radius: 16px;
+    }
+
+    .kit-card:hover { transform: translateY(-4px); }
+
+    .kit-card.green {
+      border-color: var(--green-border);
+    }
+
+    .kit-card.green:hover {
+      box-shadow: 0 12px 40px rgba(16,185,129,0.15);
+      border-color: var(--green);
+    }
+
+    .kit-card.orange {
+      border-color: var(--orange-border);
+    }
+
+    .kit-card.orange:hover {
+      box-shadow: 0 12px 40px rgba(245,158,11,0.15);
+      border-color: var(--orange);
+    }
+
+    .kit-card.red {
+      border-color: var(--red-border);
+    }
+
+    .kit-card.red:hover {
+      box-shadow: 0 12px 40px rgba(239,68,68,0.15);
+      border-color: var(--red);
+    }
+
+    .kit-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kit-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .kit-card.green .kit-icon { background: var(--green-bg); }
+    .kit-card.orange .kit-icon { background: var(--orange-bg); }
+    .kit-card.red .kit-icon { background: var(--red-bg); }
+
+    .kit-badge {
+      display: inline-block;
+      padding: 0.2rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .kit-card.green .kit-badge { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .kit-card.orange .kit-badge { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); }
+    .kit-card.red .kit-badge { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+
+    .kit-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .kit-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .kit-actions-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kit-actions-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .kit-actions-list li::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .kit-card.green .kit-actions-list li::before { background: var(--green); }
+    .kit-card.orange .kit-actions-list li::before { background: var(--orange); }
+    .kit-card.red .kit-actions-list li::before { background: var(--red); }
+
+    .kit-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .kit-card.green .kit-btn { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .kit-card.orange .kit-btn { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); }
+    .kit-card.red .kit-btn { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+
+    .kit-card.green .kit-btn:hover { background: rgba(16,185,129,0.2); }
+    .kit-card.orange .kit-btn:hover { background: rgba(245,158,11,0.2); }
+    .kit-card.red .kit-btn:hover { background: rgba(239,68,68,0.2); }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 640px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2rem;
+      animation: modalIn 0.25s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-close {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      width: 32px; height: 32px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover { color: var(--text); background: var(--bg2); }
+
+    .modal-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal-step {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg2);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .modal-step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .modal-step-content h4 {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-step-content p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .modal-download {
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      border: 1px dashed;
+    }
+
+    .modal-download.green { border-color: var(--green-border); background: var(--green-bg); }
+    .modal-download.orange { border-color: var(--orange-border); background: var(--orange-bg); }
+    .modal-download.red { border-color: var(--red-border); background: var(--red-bg); }
+
+    .modal-download p { font-size: 0.875rem; color: var(--text-muted); }
+    .modal-download strong { display: block; font-size: 0.95rem; color: var(--text); }
+
+    /* ─── FORMATION ─── */
+    #formation .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .video-card {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: all 0.25s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(59,130,246,0.3);
+      box-shadow: 0 8px 32px rgba(59,130,246,0.1);
+    }
+
+    .video-thumb {
+      aspect-ratio: 16/9;
+      background: var(--bg2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-thumb-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.5;
+    }
+
+    .video-play-btn {
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid rgba(255,255,255,0.2);
+      z-index: 1;
+    }
+
+    .video-play-btn:hover {
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.08);
+    }
+
+    .video-duration {
+      position: absolute;
+      bottom: 8px; right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      z-index: 1;
+    }
+
+    .video-body { padding: 1.25rem; }
+
+    .video-category {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 0.4rem;
+    }
+
+    .video-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+
+    .video-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ─── FAQ ─── */
+    #faq .faq-list {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 1.25rem;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .faq-q:hover { background: var(--surface2); }
+
+    .faq-chevron {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .faq-a-inner { padding: 0 1.25rem 1.1rem; }
+
+    .faq-item.open .faq-a { max-height: 300px; }
+
+    /* ─── PAPIER ─── */
+    #papier .papier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .papier-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      transition: all 0.25s;
+    }
+
+    .papier-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(59,130,246,0.25);
+    }
+
+    .papier-icon {
+      width: 44px; height: 44px;
+      background: rgba(59,130,246,0.1);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .papier-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .papier-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .papier-fields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .papier-tag {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── ALERT BANNER ─── */
+    .alert-banner {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .alert-dot {
+      width: 10px; height: 10px;
+      background: var(--red);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse 1.5s infinite;
+    }
+
+    .alert-text { font-size: 0.9rem; }
+    .alert-text strong { color: var(--red); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: gap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-right a {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover { color: var(--text); }
+
+    .footer-copy {
+      margin-top: 1.5rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      padding-bottom: 2rem;
+    }
+
+    /* ─── SEPARATOR ─── */
+    .sep {
+      max-width: 1100px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── CONFORMITE BADGE ─── */
+    .conform-strip {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .conform-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .conform-check {
+      width: 20px; height: 20px;
+      background: rgba(16,185,129,0.15);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+      color: var(--green);
+    }
+
+    /* ─── SCROLL ANIMATION ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero-stats { gap: 2rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .conform-strip { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">🛡️</div>
+      CyberCare
+    </a>
+    <ul class="nav-links">
+      <li><a href="#kits">Kits de crise</a></li>
+      <li><a href="#formation">Formation</a></li>
+      <li><a href="#papier">Support papier</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#kits" class="nav-cta">Accéder aux kits</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="grid-bg"></div>
+    <div class="glow"></div>
+    <div class="glow"></div>
+    <div class="glow"></div>
+
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Solution de cybersécurité hospitalière
+    </div>
+
+    <h1>Protégez votre hôpital.<br><span>Même sans internet.</span></h1>
+
+    <p class="hero-sub">
+      CyberCare fournit au personnel hospitalier les procédures, outils et ressources nécessaires pour prévenir les cyberattaques, réagir rapidement et garantir la continuité des soins.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#kits" class="btn btn-primary">
+        🚨 Accéder aux kits de crise
+      </a>
+      <a href="#formation" class="btn btn-secondary">
+        ▶ Voir les formations
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Niveaux d'alerte</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">&lt;2 clics</div>
+        <div class="stat-label">Accès aux procédures</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">5 min</div>
+        <div class="stat-label">Vidéos de formation</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">0€</div>
+        <div class="stat-label">Sans installation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFORMITE STRIP -->
+  <div class="conform-strip">
+    <div class="conform-item">
+      <div class="conform-check">✓</div>
+      Conforme RGPD
+    </div>
+    <div class="conform-item">
+      <div class="conform-check">✓</div>
+      PGSSI-S
+    </div>
+    <div class="conform-item">
+      <div class="conform-check">✓</div>
+      Programme CaRE
+    </div>
+    <div class="conform-item">
+      <div class="conform-check">✓</div>
+      Hôpitaux publics français
+    </div>
+    <div class="conform-item">
+      <div class="conform-check">✓</div>
+      Disponible hors ligne
+    </div>
+  </div>
+
+  <!-- KITS -->
+  <section id="kits">
+    <div class="fade-in">
+      <p class="section-label">Réponse à incident</p>
+      <h2 class="section-title">Kits de crise</h2>
+      <p class="section-sub">Trois niveaux de réponse adaptés à la gravité de l'incident. Accessibles en moins de 2 clics, utilisables sans formation préalable.</p>
+    </div>
+
+    <div class="kits-grid fade-in">
+
+      <!-- KIT VERT -->
+      <div class="kit-card green" onclick="openModal('green')">
+        <div class="kit-header">
+          <div class="kit-icon">🟢</div>
+          <div class="kit-badge">Niveau Vert</div>
+        </div>
+        <h3 class="kit-title">Prévention</h3>
+        <p class="kit-desc">Aucune attaque détectée. Mise en place des bonnes pratiques quotidiennes pour réduire les risques.</p>
+        <ul class="kit-actions-list">
+          <li>Vérifier les mots de passe et accès</li>
+          <li>Sensibiliser les équipes aux phishing</li>
+          <li>Mettre à jour les logiciels</li>
+          <li>Sauvegarder les données critiques</li>
+        </ul>
+        <button class="kit-btn">📋 Voir les procédures →</button>
+      </div>
+
+      <!-- KIT ORANGE -->
+      <div class="kit-card orange" onclick="openModal('orange')">
+        <div class="kit-header">
+          <div class="kit-icon">🟠</div>
+          <div class="kit-badge">Niveau Orange</div>
+        </div>
+        <h3 class="kit-title">Réaction rapide</h3>
+        <p class="kit-desc">Incident détecté. Procédures de confinement et d'escalade pour limiter l'impact sur les systèmes.</p>
+        <ul class="kit-actions-list">
+          <li>Alerter le responsable informatique</li>
+          <li>Déconnecter les machines affectées</li>
+          <li>Activer la cellule de crise</li>
+          <li>Documenter l'incident en cours</li>
+        </ul>
+        <button class="kit-btn">⚡ Voir les procédures →</button>
+      </div>
+
+      <!-- KIT ROUGE -->
+      <div class="kit-card red" onclick="openModal('red')">
+        <div class="kit-header">
+          <div class="kit-icon">🔴</div>
+          <div class="kit-badge">Niveau Rouge</div>
+        </div>
+        <h3 class="kit-title">Continuité des soins</h3>
+        <p class="kit-desc">Systèmes informatiques indisponibles. Basculer immédiatement sur les supports papier de secours.</p>
+        <ul class="kit-actions-list">
+          <li>Activer les fiches papier patients</li>
+          <li>Contacter l'ANSSI et la direction</li>
+          <li>Maintenir les soins critiques</li>
+          <li>Isoler complètement le réseau</li>
+        </ul>
+        <button class="kit-btn">🚨 Voir les procédures →</button>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- FORMATION -->
+  <section id="formation">
+    <div class="fade-in">
+      <p class="section-label">Sensibilisation</p>
+      <h2 class="section-title">Formation du personnel</h2>
+      <p class="section-sub">Des vidéos courtes de moins de 5 minutes, accessibles à tous, pour que chaque membre du personnel sache quoi faire face à une cyberattaque.</p>
+    </div>
+
+    <div class="videos-grid fade-in">
+
+      <div class="video-card">
+        <div class="video-thumb">
+          <div class="video-thumb-bg" style="background: linear-gradient(135deg, #1e3a5f, #0a0e17);"></div>
+          <div class="video-play-btn" onclick="alert('Vidéo 1 – Bientôt disponible')">▶</div>
+          <span class="video-duration">4 min 30</span>
+        </div>
+        <div class="video-body">
+          <p class="video-category">Niveau 1 – Bases</p>
+          <h4 class="video-title">Reconnaître un email de phishing</h4>
+          <p class="video-desc">Identifier les signaux d'alerte dans un email suspect et adopter les bons réflexes.</p>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-thumb">
+          <div class="video-thumb-bg" style="background: linear-gradient(135deg, #3b1a08, #0a0e17);"></div>
+          <div class="video-play-btn" onclick="alert('Vidéo 2 – Bientôt disponible')">▶</div>
+          <span class="video-duration">3 min 50</span>
+        </div>
+        <div class="video-body">
+          <p class="video-category">Niveau 2 – Réaction</p>
+          <h4 class="video-title">Que faire en cas de ransomware ?</h4>
+          <p class="video-desc">Les 5 premières actions à réaliser dans les 10 minutes suivant la détection.</p>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-thumb">
+          <div class="video-thumb-bg" style="background: linear-gradient(135deg, #0e2a1e, #0a0e17);"></div>
+          <div class="video-play-btn" onclick="alert('Vidéo 3 – Bientôt disponible')">▶</div>
+          <span class="video-duration">5 min 00</span>
+        </div>
+        <div class="video-body">
+          <p class="video-category">Niveau 3 – Continuité</p>
+          <h4 class="video-title">Utiliser le kit papier de secours</h4>
+          <p class="video-desc">Comment remplir et utiliser les fiches papier en situation de crise totale.</p>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-thumb">
+          <div class="video-thumb-bg" style="background: linear-gradient(135deg, #1e1040, #0a0e17);"></div>
+          <div class="video-play-btn" onclick="alert('Vidéo 4 – Bientôt disponible')">▶</div>
+          <span class="video-duration">4 min 10</span>
+        </div>
+        <div class="video-body">
+          <p class="video-category">Niveau 1 – Hygiène numérique</p>
+          <h4 class="video-title">Mots de passe et accès sécurisés</h4>
+          <p class="video-desc">Créer et gérer des mots de passe robustes sans gestionnaire complexe.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- PAPIER -->
+  <section id="papier">
+    <div class="fade-in">
+      <p class="section-label">Mode dégradé</p>
+      <h2 class="section-title">Support papier de secours</h2>
+      <p class="section-sub">Des fiches imprimables, prêtes en cas de panne totale. Maximum 10 champs par fiche pour rester utilisables sous pression.</p>
+    </div>
+
+    <div class="alert-banner fade-in">
+      <div class="alert-dot"></div>
+      <p class="alert-text"><strong>En cas de niveau ROUGE :</strong> Imprimez ces fiches en avance et conservez-les dans chaque service. Elles permettent de maintenir les soins sans aucun système informatique.</p>
+    </div>
+
+    <div class="papier-grid fade-in" style="margin-top: 2rem;">
+
+      <div class="papier-card">
+        <div class="papier-icon">👤</div>
+        <h4 class="papier-title">Fiche Patient</h4>
+        <p class="papier-desc">Informations essentielles du patient pour assurer la continuité des soins en mode dégradé.</p>
+        <div class="papier-fields">
+          <span class="papier-tag">Nom / Prénom</span>
+          <span class="papier-tag">Date de naissance</span>
+          <span class="papier-tag">Allergies</span>
+          <span class="papier-tag">Groupe sanguin</span>
+          <span class="papier-tag">Traitement en cours</span>
+          <span class="papier-tag">Médecin référent</span>
+          <span class="papier-tag">Contact d'urgence</span>
+        </div>
+        <br>
+        <a href="#" class="kit-btn" style="background: rgba(59,130,246,0.1); color: var(--accent-light); border: 1px solid rgba(59,130,246,0.2); display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.75rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s;" onclick="alert('PDF Fiche Patient – Bientôt disponible')">📄 Télécharger le PDF</a>
+      </div>
+
+      <div class="papier-card">
+        <div class="papier-icon">🏥</div>
+        <h4 class="papier-title">Fiche Opérations en cours</h4>
+        <p class="papier-desc">Suivi des soins et interventions en cours pour assurer la transmission entre équipes.</p>
+        <div class="papier-fields">
+          <span class="papier-tag">Service</span>
+          <span class="papier-tag">Chambre / Lit</span>
+          <span class="papier-tag">Soin en cours</span>
+          <span class="papier-tag">Heure de début</span>
+          <span class="papier-tag">Médecin responsable</span>
+          <span class="papier-tag">Prochain soin</span>
+          <span class="papier-tag">Observations</span>
+        </div>
+        <br>
+        <a href="#" class="kit-btn" style="background: rgba(59,130,246,0.1); color: var(--accent-light); border: 1px solid rgba(59,130,246,0.2); display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.75rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s;" onclick="alert('PDF Opérations – Bientôt disponible')">📄 Télécharger le PDF</a>
+      </div>
+
+      <div class="papier-card">
+        <div class="papier-icon">📞</div>
+        <h4 class="papier-title">Contacts critiques</h4>
+        <p class="papier-desc">Numéros et contacts à appeler en priorité lors d'un incident cybersécurité.</p>
+        <div class="papier-fields">
+          <span class="papier-tag">DSI / IT</span>
+          <span class="papier-tag">Direction</span>
+          <span class="papier-tag">ANSSI</span>
+          <span class="papier-tag">CERT Santé</span>
+          <span class="papier-tag">ARS</span>
+          <span class="papier-tag">SAMU</span>
+          <span class="papier-tag">Pompiers</span>
+        </div>
+        <br>
+        <a href="#" class="kit-btn" style="background: rgba(59,130,246,0.1); color: var(--accent-light); border: 1px solid rgba(59,130,246,0.2); display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.75rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s;" onclick="alert('PDF Contacts – Bientôt disponible')">📄 Télécharger le PDF</a>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="sep">
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="fade-in">
+      <p class="section-label">Questions fréquentes</p>
+      <h2 class="section-title">FAQ</h2>
+      <p class="section-sub">Tout ce que vous devez savoir sur CyberCare et son utilisation en situation de crise.</p>
+    </div>
+
+    <div class="faq-list fade-in">
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Qu'est-ce que CyberCare et à qui s'adresse-t-il ?
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">CyberCare est une solution mixte (technique et organisationnelle) dédiée aux hôpitaux publics français. Elle s'adresse à l'ensemble du personnel : médical, soignant, administratif et informatique. Son objectif est de prévenir les cyberattaques, d'organiser une réaction rapide et de garantir la continuité des soins même sans système informatique.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Comment accéder rapidement au kit adapté à ma situation ?
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Depuis la page d'accueil, cliquez directement sur l'un des 3 kits colorés (Vert, Orange, Rouge) selon le niveau d'alerte communiqué par votre responsable. Chaque kit est accessible en moins de 2 clics et contient des procédures claires, même pour les personnes sans formation technique.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Que faire si les systèmes informatiques sont totalement indisponibles ?
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Activez le kit ROUGE et récupérez les fiches papier pré-imprimées stockées dans chaque service. Ces fiches permettent de continuer à enregistrer les informations patients (nom, traitement, soins en cours) sans aucun outil numérique. Elles ont été conçues pour être utilisables en moins de 2 minutes par n'importe quel soignant.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          CyberCare est-il conforme RGPD et aux normes de santé ?
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Oui. CyberCare respecte le RGPD, la PGSSI-S (Politique Générale de Sécurité des Systèmes d'Information de Santé) et le programme CaRE (Cybersécurité Accélération et Résilience des Établissements). Les fiches papier sont conçues selon le principe de minimisation des données : maximum 10 champs par fiche, sans information superflue.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Faut-il installer quelque chose pour utiliser CyberCare ?
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Non. CyberCare est un site web statique, accessible depuis n'importe quel navigateur sur desktop ou mobile, sans installation. Les PDF des fiches papier peuvent être téléchargés en avance et utilisés hors connexion. La solution ne nécessite aucun compte, aucun logiciel spécifique.</div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Qui contacter en cas de cyberattaque grave ?
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">En cas d'attaque grave (niveau Orange ou Rouge), contactez immédiatement : votre DSI/responsable informatique, puis l'ANSSI (Agence Nationale de la Sécurité des Systèmes d'Information) au 3218, et le CERT Santé. La fiche "Contacts critiques" du kit papier liste tous ces numéros. Ne tentez pas de résoudre seul un incident sérieux.</div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <hr class="sep">
+  <footer>
+    <div class="footer-left">
+      <div class="nav-logo-icon" style="width:28px;height:28px;font-size:14px;">🛡️</div>
+      <span class="footer-logo">CyberCare</span>
+      <span style="color: var(--text-dim); font-size:0.85rem;">– SecuriMed</span>
+    </div>
+    <div class="footer-right">
+      <a href="#kits">Kits de crise</a>
+      <a href="#formation">Formation</a>
+      <a href="#papier">Support papier</a>
+      <a href="#faq">FAQ</a>
+    </div>
+  </footer>
+
+  <p class="footer-copy">
+    Efrei Paris – Panthéon-Assas Université · Projets Transverses 2025/2026 ·
+    GUETARNI L. · AMRANI A. · RECHIDI I. · OUAYACH-YAHIAT A.
+  </p>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="modal-green">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="kit-badge" style="background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); display:inline-block; padding:0.2rem 0.75rem; border-radius:100px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Niveau Vert</div>
+          <h2 style="font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:700;">Kit Prévention</h2>
+        </div>
+        <button class="modal-close" onclick="closeModal('green')">✕</button>
+      </div>
+      <div class="modal-steps">
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--green-bg); color:var(--green);">1</div>
+          <div class="modal-step-content">
+            <h4>Vérifier les mots de passe</h4>
+            <p>S'assurer que tous les comptes utilisent des mots de passe complexes d'au moins 12 caractères. Activer l'authentification à double facteur si disponible.</p>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--green-bg); color:var(--green);">2</div>
+          <div class="modal-step-content">
+            <h4>Sensibiliser aux emails suspects</h4>
+            <p>Rappeler aux équipes de ne jamais cliquer sur un lien ou ouvrir une pièce jointe d'un expéditeur inconnu. Signaler tout email douteux à l'IT.</p>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--green-bg); color:var(--green);">3</div>
+          <div class="modal-step-content">
+            <h4>Vérifier les mises à jour</h4>
+            <p>S'assurer que les systèmes d'exploitation et logiciels médicaux sont à jour. Contacter le DSI si des mises à jour sont en attente.</p>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--green-bg); color:var(--green);">4</div>
+          <div class="modal-step-content">
+            <h4>Sauvegarder les données critiques</h4>
+            <p>Vérifier que les sauvegardes automatiques fonctionnent. Réaliser une sauvegarde manuelle des données les plus sensibles si nécessaire.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-download green">
+        <div>
+          <strong>📄 Fiche Prévention – Kit Vert</strong>
+          <p>Procédures complètes à imprimer et afficher dans chaque service</p>
+        </div>
+        <button class="kit-btn" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);padding:0.5rem 1rem;border-radius:8px;font-size:0.8rem;cursor:pointer;white-space:nowrap;" onclick="alert('PDF Kit Vert – Bientôt disponible')">Télécharger PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-orange">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="kit-badge" style="background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-border);display:inline-block;padding:0.2rem 0.75rem;border-radius:100px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">Niveau Orange</div>
+          <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;">Kit Réaction Rapide</h2>
+        </div>
+        <button class="modal-close" onclick="closeModal('orange')">✕</button>
+      </div>
+      <div class="modal-steps">
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--orange-bg);color:var(--orange);">1</div>
+          <div class="modal-step-content">
+            <h4>🔴 STOP – Ne rien faire d'autre d'abord</h4>
+            <p>Ne pas éteindre les machines, ne pas tenter de réparer soi-même. Garder les preuves intactes et noter l'heure exacte de détection.</p>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--orange-bg);color:var(--orange);">2</div>
+          <div class="modal-step-content">
+            <h4>Alerter le responsable informatique</h4>
+            <p>Appeler immédiatement le DSI ou le responsable IT. Décrire ce que vous avez vu, sur quel poste, à quelle heure. Ne pas envoyer d'email (le réseau peut être compromis).</p>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--orange-bg);color:var(--orange);">3</div>
+          <div class="modal-step-content">
+            <h4>Déconnecter les machines affectées</h4>
+            <p>Sur instruction du DSI : débrancher le câble réseau des postes suspects. Ne pas éteindre. Ne pas supprimer de fichiers.</p>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num" style="background:var(--orange-bg);color:var(--orange);">4</div>
+          <div class="modal-step-content">
+            <h4>Activer la cellule de crise</h4>
+            <p>Prévenir la direction. Rassembler les responsables DSI, médical et administratif. Commencer à documenter toutes les actions sur papier.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-download orange">
+        <div>
+          <strong>📄 Fiche Réaction – Kit Orange</strong>
+          <p>Procédures d'urgence à afficher dans la salle informatique et aux postes de soins</p>
+        </div>
+        <button class="kit-btn" style="background:var(--orange-bg);color:var(--orange);border:1px solid var(--orange-border);padding:0.5rem 1rem;border-radius:8px;font-size:0.8rem;cursor:pointer;white-space:nowrap;" onclick="alert('PDF Kit Orange – Bientôt disponible')">Télécharger PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-red">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="kit-badge" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);display:inline-block;padding:0.2rem 0.75rem;border-radius:100px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">Niveau Rouge</div>
+          <h2 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;">Kit Continuité des Soins</h2>
+        </div>
+        <button class="modal-close" onclick="closeModal('red')">✕</button>
+      </div>
+      <div class="modal-steps">
+        <div class="modal-step" style="border-color:rgba(239,68,68,0.2);">
+          <div class="modal-step-num" style="background:var(--red-bg);color:var(--red);">1</div>
+          <div class="modal-step-content">
+            <h4>⚠️ Activer les fiches papier IMMÉDIATEMENT</h4>
+            <p>Récupérer les fiches papier pré-imprimées dans l'armoire de chaque service. Les distribuer au personnel soignant en priorité absolue.</p>
+          </div>
+        </div>
+        <div class="modal-step" style="border-color:rgba(239,68,68,0.2);">
+          <div class="modal-step-num" style="background:var(--red-bg);color:var(--red);">2</div>
+          <div class="modal-step-content">
+            <h4>Isoler complètement le réseau</h4>
+            <p>Sur instruction du DSI : couper tous les accès réseau. Débrancher les équipements non essentiels. Les appareils médicaux critiques restent fonctionnels.</p>
+          </div>
+        </div>
+        <div class="modal-step" style="border-color:rgba(239,68,68,0.2);">
+          <div class="modal-step-num" style="background:var(--red-bg);color:var(--red);">3</div>
+          <div class="modal-step-content">
+            <h4>Contacter l'ANSSI et les autorités</h4>
+            <p>Appeler l'ANSSI (3218), le CERT Santé et l'ARS. Signaler l'attaque à la CNIL si des données patients sont compromises. Conserver tous les logs sur support externe.</p>
+          </div>
+        </div>
+        <div class="modal-step" style="border-color:rgba(239,68,68,0.2);">
+          <div class="modal-step-num" style="background:var(--red-bg);color:var(--red);">4</div>
+          <div class="modal-step-content">
+            <h4>Maintenir les soins critiques</h4>
+            <p>Prioriser les patients en urgence vitale. Utiliser les fiches patients papier pour toute prescription et transmission. La continuité des soins prime sur tout.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-download red">
+        <div>
+          <strong>📄 Fiche Crise Totale – Kit Rouge</strong>
+          <p>À imprimer en avance et à conserver dans chaque service et armoire de soins</p>
+        </div>
+        <button class="kit-btn" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);padding:0.5rem 1rem;border-radius:8px;font-size:0.8rem;cursor:pointer;white-space:nowrap;" onclick="alert('PDF Kit Rouge – Bientôt disponible')">Télécharger PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal
+    function openModal(color) {
+      document.getElementById('modal-' + color).classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(color) {
+      document.getElementById('modal-' + color).classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+
+    // FAQ accordion
+    function toggleFaq(el) {
+      const item = el.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
